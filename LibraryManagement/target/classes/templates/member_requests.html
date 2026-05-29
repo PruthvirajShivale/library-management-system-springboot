@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Procurement Wishlist Portal</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #f1f5f9);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-slate-800">
+
+<!-- Top Navbar -->
+<nav class="backdrop-blur-xl bg-white/80 border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-code-pull-request"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-slate-900 text-sm">Procurement Desk</h1>
+                <p class="text-xs text-slate-500">Student Request Portal</p>
+            </div>
+        </div>
+
+        <a href="/member/dashboard"
+           class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-all shadow">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Workspace
+        </a>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10 space-y-8">
+
+    <!-- Header Card -->
+    <div class="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-indigo-600"></i>
+            Request New Book Procurement
+        </h2>
+        <p class="text-sm text-slate-500 mt-1">
+            Submit book requests to library admin for approval and procurement.
+        </p>
+    </div>
+
+    <!-- Request Form -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square text-indigo-600"></i> New Request Form
+        </h3>
+
+        <form th:action="@{/member/requests/submit}" method="post"
+              class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+
+            <div>
+                <label class="text-xs text-slate-500">Book Title</label>
+                <input type="text" name="title" required
+                       placeholder="Enter book title"
+                       class="w-full px-4 py-2.5 mt-1 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+
+            <div>
+                <label class="text-xs text-slate-500">Author</label>
+                <input type="text" name="author" required
+                       placeholder="Enter author name"
+                       class="w-full px-4 py-2.5 mt-1 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+
+            <button type="submit"
+                    class="h-[42px] bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl transition-all shadow-md">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Submit Request
+            </button>
+        </form>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-list text-indigo-600"></i>
+                Your Requests History
+            </h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+
+                <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
+                <tr>
+                    <th class="px-6 py-3 text-left">Title</th>
+                    <th class="px-6 py-3 text-left">Author</th>
+                    <th class="px-6 py-3 text-left">Status</th>
+                    <th class="px-6 py-3 text-left">Admin Notes</th>
+                </tr>
+                </thead>
+
+                <tbody class="divide-y divide-slate-100">
+
+                <tr th:each="req : ${myRequests}" class="hover:bg-slate-50 transition">
+
+                    <td class="px-6 py-4 font-semibold text-slate-900"
+                        th:text="${req.title}"></td>
+
+                    <td class="px-6 py-4 text-slate-600"
+                        th:text="${req.author}"></td>
+
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs font-bold rounded-full"
+                              th:classappend="${
+                                  req.status == 'PENDING'
+                                  ? 'bg-amber-100 text-amber-700'
+                                  : (req.status == 'APPROVED'
+                                  ? 'bg-emerald-100 text-emerald-700'
+                                  : 'bg-rose-100 text-rose-700')
+                              }"
+                              th:text="${req.status}">
+                        </span>
+                    </td>
+
+                    <td class="px-6 py-4 text-slate-500 italic"
+                        th:text="${req.adminNotes}">
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(myRequests)}">
+                    <td colspan="4" class="text-center py-10 text-slate-400 italic">
+                        No procurement requests found. Submit your first request above.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

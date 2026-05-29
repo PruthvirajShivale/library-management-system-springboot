@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LibraryOS • Member Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+
+        body{
+            background:
+            radial-gradient(circle at top left,#1e293b 0%,#0f172a 40%,#020617 100%);
+            overflow-x:hidden;
+        }
+
+        .glass-card{
+            background:rgba(15,23,42,0.72);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0 10px 40px rgba(0,0,0,0.35);
+        }
+
+        .hero-gradient{
+            background:
+            linear-gradient(
+            135deg,
+            #4f46e5 0%,
+            #7c3aed 45%,
+            #06b6d4 100%
+            );
+        }
+
+        .table-row{
+            transition:all .25s ease;
+        }
+
+        .table-row:hover{
+            background:rgba(255,255,255,0.03);
+            transform:scale(1.002);
+        }
+
+        .search-box{
+            background:rgba(15,23,42,0.75);
+            border:1px solid rgba(148,163,184,0.15);
+            color:white;
+        }
+
+        .search-box:focus{
+            outline:none;
+            border-color:#6366f1;
+            box-shadow:0 0 0 4px rgba(99,102,241,0.15);
+        }
+
+        .search-box::placeholder{
+            color:#64748b;
+        }
+
+        ::-webkit-scrollbar{
+            width:8px;
+            height:8px;
+        }
+
+        ::-webkit-scrollbar-thumb{
+            background:#334155;
+            border-radius:999px;
+        }
+
+    </style>
+
+</head>
+
+<body class="min-h-screen text-slate-200">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+
+    <aside class="hidden lg:flex lg:w-72 flex-col bg-black/20 backdrop-blur-xl border-r border-slate-800/60">
+
+        <!-- LOGO -->
+
+        <div class="h-20 flex items-center px-7 border-b border-slate-800/60">
+
+            <div class="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center text-white text-2xl shadow-2xl">
+
+                <i class="fa-solid fa-book-open-reader"></i>
+
+            </div>
+
+            <div class="ml-4">
+
+                <h1 class="text-xl font-black text-white">
+                    LibraryOS
+                </h1>
+
+                <p class="text-xs text-slate-400">
+                    Student Workspace
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- NAVIGATION -->
+
+        <div class="flex-1 p-5 space-y-3">
+
+            <a href="#"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-indigo-500/15 border border-indigo-500/20 text-indigo-300">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span class="font-semibold">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+
+            <a href="/member/requests"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/5 transition-all text-slate-300">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                <span>
+                    Request Books
+                </span>
+
+            </a>
+
+
+
+            <a href="#catalogSection"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/5 transition-all text-slate-300">
+
+                <i class="fa-solid fa-book"></i>
+
+                <span>
+                    Browse Catalog
+                </span>
+
+            </a>
+
+
+
+            <a href="#borrowedBooks"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/5 transition-all text-slate-300">
+
+                <i class="fa-solid fa-book-bookmark"></i>
+
+                <span>
+                    Borrowed Books
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <div class="p-5 border-t border-slate-800/60">
+
+            <a href="/logout"
+               class="flex items-center justify-center gap-3 w-full py-3 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-semibold transition-all shadow-lg shadow-rose-500/20">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                Sign Out
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <div class="flex-1 overflow-hidden">
+
+        <!-- TOPBAR -->
+
+        <header class="sticky top-0 z-50 bg-black/20 backdrop-blur-xl border-b border-slate-800/60">
+
+            <div class="h-20 px-6 lg:px-10 flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-2xl lg:text-3xl font-black text-white">
+                        Welcome Back 👋
+                    </h2>
+
+                    <p class="text-slate-400 text-sm mt-1">
+                        Explore books, manage allocations and track library activities.
+                    </p>
+
+                </div>
+
+
+
+                <div class="hidden sm:flex items-center gap-4">
+
+                    <div class="text-right">
+
+                        <p class="text-white font-semibold"
+                           th:text="${userProfile.name}">
+                        </p>
+
+                        <p class="text-slate-400 text-xs">
+                            Active Member
+                        </p>
+
+                    </div>
+
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/20 text-indigo-300 flex items-center justify-center text-lg">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- CONTENT -->
+
+        <main class="p-6 lg:p-10 space-y-8">
+
+            <!-- HERO -->
+
+            <section class="hero-gradient rounded-[32px] p-8 lg:p-12 relative overflow-hidden shadow-2xl">
+
+                <div class="absolute top-0 right-0 w-[450px] h-[450px] bg-white/10 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+
+                    <!-- LEFT -->
+
+                    <div>
+
+                        <p class="uppercase tracking-[0.25em] text-xs text-indigo-100 font-semibold">
+                            Smart Library System
+                        </p>
+
+                        <h1 class="text-4xl lg:text-6xl font-black text-white leading-tight mt-5">
+
+                            Digital
+                            Learning Hub
+
+                        </h1>
+
+                        <p class="mt-6 text-indigo-100 text-lg leading-relaxed max-w-2xl">
+
+                            Borrow books instantly, request new resources,
+                            track deadlines and manage your complete digital
+                            library experience from one modern dashboard.
+
+                        </p>
+
+
+
+                        <div class="flex flex-wrap gap-4 mt-8">
+
+                            <a href="/member/requests"
+                               class="px-6 py-3 rounded-2xl bg-white text-indigo-700 font-bold hover:scale-105 transition-all shadow-xl">
+
+                                <i class="fa-solid fa-plus mr-2"></i>
+                                Request New Book
+
+                            </a>
+
+                            <a href="#catalogSection"
+                               class="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/20 transition-all">
+
+                                <i class="fa-solid fa-book mr-2"></i>
+                                Explore Catalog
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- RIGHT -->
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                        <!-- CARD -->
+
+                        <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
+
+                            <div class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-white text-xl">
+
+                                <i class="fa-solid fa-id-card"></i>
+
+                            </div>
+
+                            <p class="text-indigo-100 text-xs uppercase tracking-wider mt-5">
+                                Member ID
+                            </p>
+
+                            <h3 class="text-2xl font-black text-white mt-2 font-mono"
+                                th:text="${userProfile.id}">
+                            </h3>
+
+                        </div>
+
+
+
+                        <!-- CARD -->
+
+                        <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
+
+                            <div class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-white text-xl">
+
+                                <i class="fa-solid fa-envelope"></i>
+
+                            </div>
+
+                            <p class="text-indigo-100 text-xs uppercase tracking-wider mt-5">
+                                Email
+                            </p>
+
+                            <h3 class="text-sm font-bold text-white mt-2 break-all"
+                                th:text="${userProfile.email}">
+                            </h3>
+
+                        </div>
+
+
+
+                        <!-- CARD -->
+
+                        <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:col-span-2">
+
+                            <div class="flex items-center justify-between">
+
+                                <div>
+
+                                    <p class="text-indigo-100 text-xs uppercase tracking-wider">
+                                        Outstanding Fine
+                                    </p>
+
+                                    <h3 class="text-4xl font-black text-white mt-3 font-mono"
+                                        th:text="'₹' + ${myFines}">
+                                    </h3>
+
+                                </div>
+
+                                <div class="w-16 h-16 rounded-3xl bg-rose-500/20 text-rose-200 flex items-center justify-center text-2xl">
+
+                                    <i class="fa-solid fa-wallet"></i>
+
+                                </div>
+
+                            </div>
+
+                            <p class="text-indigo-100 text-sm mt-4">
+                                Accounts above ₹100 may have temporary reservation restrictions.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- BORROWED BOOKS -->
+
+            <section id="borrowedBooks"
+                     class="glass-card rounded-[32px] overflow-hidden">
+
+                <div class="p-6 lg:p-8 border-b border-slate-800">
+
+                    <div class="flex items-center gap-4">
+
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-500/15 text-indigo-300 flex items-center justify-center text-xl">
+
+                            <i class="fa-solid fa-book-bookmark"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2 class="text-2xl font-black text-white">
+                                Borrowed Books
+                            </h2>
+
+                            <p class="text-slate-400 text-sm mt-1">
+                                Currently issued books under your account.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full min-w-[850px]">
+
+                        <thead>
+
+                        <tr class="border-b border-slate-800 bg-white/5 text-slate-400 uppercase tracking-[0.18em] text-xs">
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Book Title
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Author
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Borrowed Date
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Due Date
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+
+                        <tbody class="divide-y divide-slate-800 text-sm"
+                               id="memberPersonalAllocationBody">
+
+                        <tr th:each="myIssue : ${myIssuedBooks}"
+                            class="table-row">
+
+                            <td class="px-8 py-6 font-bold text-white"
+                                th:text="${myIssue.book.title}">
+                            </td>
+
+                            <td class="px-8 py-6 text-slate-300"
+                                th:text="${myIssue.book.author}">
+                            </td>
+
+                            <td class="px-8 py-6 text-slate-400 font-mono"
+                                th:text="${myIssue.issueDate}">
+                            </td>
+
+                            <td class="px-8 py-6">
+
+                                <span class="px-4 py-2 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-semibold"
+                                      th:text="${myIssue.dueDate}">
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+
+                        <!-- EMPTY -->
+
+                        <tr th:if="${#lists.isEmpty(myIssuedBooks)}"
+                            id="memberNoLendingPlaceholder">
+
+                            <td colspan="4" class="py-20 text-center">
+
+                                <div class="flex flex-col items-center">
+
+                                    <div class="w-24 h-24 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-4xl">
+
+                                        <i class="fa-solid fa-book"></i>
+
+                                    </div>
+
+                                    <h2 class="text-3xl font-black text-white mt-7">
+                                        No Borrowed Books
+                                    </h2>
+
+                                    <p class="text-slate-400 mt-3">
+                                        You currently don't have any active allocations.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- CATALOG -->
+
+            <section id="catalogSection"
+                     class="glass-card rounded-[32px] overflow-hidden">
+
+                <!-- HEADER -->
+
+                <div class="p-6 lg:p-8 border-b border-slate-800 flex flex-col lg:flex-row justify-between gap-5">
+
+                    <div>
+
+                        <h2 class="text-2xl font-black text-white flex items-center gap-3">
+
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-xl">
+
+                                <i class="fa-solid fa-books"></i>
+
+                            </div>
+
+                            Global Library Catalog
+
+                        </h2>
+
+                        <p class="text-slate-400 text-sm mt-2">
+                            Search and reserve books from the complete digital inventory.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- SEARCH -->
+
+                    <div class="relative w-full lg:w-80">
+
+                        <span class="absolute left-0 top-0 h-full w-14 flex items-center justify-center text-slate-500">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                        </span>
+
+                        <input type="text"
+                               id="memberCatalogSearch"
+                               placeholder="Search books, authors or ISBN..."
+                               class="search-box w-full h-14 pl-14 pr-5 rounded-2xl text-sm">
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TABLE -->
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full min-w-[1000px]"
+                           id="memberCatalogTable">
+
+                        <thead>
+
+                        <tr class="border-b border-slate-800 bg-white/5 text-slate-400 uppercase tracking-[0.18em] text-xs">
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Book
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Author
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                ISBN
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Status
+                            </th>
+
+                            <th class="px-8 py-5 text-right font-semibold">
+                                Action
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+
+                        <tbody class="divide-y divide-slate-800 text-sm">
+
+                        <tr th:each="book : ${books}"
+                            class="table-row table-row-item"
+                            th:id="'catalog-row-' + ${book.id}">
+
+                            <!-- TITLE -->
+
+                            <td class="px-8 py-6">
+
+                                <div class="flex items-center gap-4">
+
+                                    <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-lg">
+
+                                        <i class="fa-solid fa-book-open"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <h3 class="font-bold text-white text-base search-target"
+                                            th:text="${book.title}">
+                                        </h3>
+
+                                        <p class="text-slate-500 text-xs mt-1">
+                                            Library Asset
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- AUTHOR -->
+
+                            <td class="px-8 py-6 text-slate-300 search-target"
+                                th:text="${book.author}">
+                            </td>
+
+
+
+                            <!-- ISBN -->
+
+                            <td class="px-8 py-6">
+
+                                <span class="px-4 py-2 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-mono text-xs search-target"
+                                      th:text="${book.isbn}">
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- STATUS -->
+
+                            <td class="px-8 py-6 status-container">
+
+                                <span th:if="${book.issued}"
+                                      class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-semibold">
+
+                                    <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+
+                                    Unavailable
+
+                                </span>
+
+
+
+                                <span th:if="${!book.issued}"
+                                      class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-semibold">
+
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+
+                                    Available
+
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- ACTION -->
+
+                            <td class="px-8 py-6 text-right action-container">
+
+                                <button th:if="${!book.issued}"
+                                        th:onclick="'bookNow(' + ${book.id} + ')'"
+                                        class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-lg shadow-indigo-500/20">
+
+                                    <i class="fa-solid fa-bookmark mr-2"></i>
+
+                                    Borrow Now
+
+                                </button>
+
+
+
+                                <button th:if="${book.issued}"
+                                        disabled
+                                        class="px-5 py-3 rounded-2xl bg-slate-800 border border-slate-700 text-slate-500 font-semibold cursor-not-allowed">
+
+                                    Locked
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    document.getElementById('memberCatalogSearch').addEventListener('input', function(e) {
+
+        const query = e.target.value.toLowerCase().trim();
+
+        document.querySelectorAll('#memberCatalogTable .table-row-item').forEach(row => {
+
+            const searchString = Array.from(
+                row.querySelectorAll('.search-target')
+            ).map(td => td.textContent.toLowerCase()).join(' ');
+
+            row.style.display = searchString.includes(query) ? '' : 'none';
+
+        });
+
+    });
+
+
+
+    function bookNow(bookId) {
+
+        fetch(`/api/books/booknow/${bookId}`, {
+            method: 'POST'
+        })
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            if(data.success){
+
+                Swal.fire({
+                    icon:'success',
+                    title:'Book Borrowed!',
+                    text:data.message,
+                    toast:true,
+                    position:'top-end',
+                    showConfirmButton:false,
+                    timer:3000
+                });
+
+
+
+                const placeholder =
+                    document.getElementById('memberNoLendingPlaceholder');
+
+                if(placeholder) placeholder.remove();
+
+
+
+                const allocationBody =
+                    document.getElementById('memberPersonalAllocationBody');
+
+
+
+                const newRow = `
+
+                    <tr class="table-row">
+
+                        <td class="px-8 py-6 font-bold text-white">
+                            ${data.title}
+                        </td>
+
+                        <td class="px-8 py-6 text-slate-300">
+                            ${data.author}
+                        </td>
+
+                        <td class="px-8 py-6 text-slate-400 font-mono">
+                            ${data.issueDate}
+                        </td>
+
+                        <td class="px-8 py-6">
+
+                            <span class="px-4 py-2 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-semibold">
+
+                                ${data.dueDate}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+
+                allocationBody.insertAdjacentHTML('beforeend', newRow);
+
+
+
+                const catalogRow =
+                    document.getElementById(`catalog-row-${bookId}`);
+
+
+
+                if(catalogRow){
+
+                    catalogRow.querySelector('.status-container').innerHTML = `
+
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-semibold">
+
+                            <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+
+                            Unavailable
+
+                        </span>
+
+                    `;
+
+
+
+                    catalogRow.querySelector('.action-container').innerHTML = `
+
+                        <button disabled
+                                class="px-5 py-3 rounded-2xl bg-slate-800 border border-slate-700 text-slate-500 font-semibold cursor-not-allowed">
+
+                            Locked
+
+                        </button>
+
+                    `;
+
+                }
+
+            }else{
+
+                Swal.fire({
+                    icon:'error',
+                    title:'Reservation Denied',
+                    text:data.message
+                });
+
+            }
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>

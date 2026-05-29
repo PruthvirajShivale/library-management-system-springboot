@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LibraryOS • Fine Management</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+
+        ::-webkit-scrollbar{
+            width:8px;
+            height:8px;
+        }
+
+        ::-webkit-scrollbar-thumb{
+            background:#334155;
+            border-radius:999px;
+        }
+
+        body{
+            background:
+            radial-gradient(circle at top left,#1e293b 0%,#0f172a 40%,#020617 100%);
+        }
+
+        .glass-card{
+            background:rgba(15,23,42,0.72);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(148,163,184,0.10);
+            box-shadow:0 10px 40px rgba(0,0,0,0.30);
+        }
+
+        .hero-gradient{
+            background:
+            linear-gradient(
+            135deg,
+            #f59e0b 0%,
+            #f97316 45%,
+            #ef4444 100%
+            );
+        }
+
+        .table-row{
+            transition:all .25s ease;
+        }
+
+        .table-row:hover{
+            background:rgba(255,255,255,0.04);
+            transform:scale(1.002);
+        }
+
+        .glow-orange{
+            box-shadow:0 0 35px rgba(249,115,22,0.25);
+        }
+
+    </style>
+
+</head>
+
+<body class="min-h-screen text-slate-200">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+
+    <aside class="hidden lg:flex lg:w-72 flex-col border-r border-slate-800/60 bg-black/20 backdrop-blur-xl">
+
+        <div class="h-20 border-b border-slate-800/60 flex items-center px-7">
+
+            <div class="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center text-white text-xl glow-orange">
+                <i class="fa-solid fa-sack-dollar"></i>
+            </div>
+
+            <div class="ml-4">
+
+                <h1 class="text-xl font-black text-white tracking-wide">
+                    FineDesk
+                </h1>
+
+                <p class="text-xs text-slate-400">
+                    Penalty Management Center
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="flex-1 p-5 space-y-2">
+
+            <a href="/admin/dashboard"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/5 transition-all">
+
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+            <a href="/admin/analytics"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/5 transition-all">
+
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Analytics</span>
+
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-orange-500/15 border border-orange-500/20 text-orange-300">
+
+                <i class="fa-solid fa-coins"></i>
+                <span class="font-semibold">Fine Management</span>
+
+            </a>
+
+            <a href="/admin/requests"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/5 transition-all">
+
+                <i class="fa-solid fa-code-pull-request"></i>
+                <span>Book Requests</span>
+
+            </a>
+
+        </div>
+
+
+
+        <div class="p-5 border-t border-slate-800/60">
+
+            <a href="/admin/dashboard"
+               class="flex items-center justify-center gap-3 w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 transition-all text-white font-semibold">
+
+                <i class="fa-solid fa-arrow-left"></i>
+                Back To Dashboard
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <div class="flex-1 overflow-hidden">
+
+        <!-- TOPBAR -->
+
+        <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-black/20 backdrop-blur-xl">
+
+            <div class="h-20 px-6 lg:px-10 flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-2xl lg:text-3xl font-black text-white">
+                        Fine Management System 💰
+                    </h2>
+
+                    <p class="text-sm text-slate-400 mt-1">
+                        Monitor overdue penalties and settle unpaid fine records.
+                    </p>
+
+                </div>
+
+                <a href="/admin/dashboard"
+                   class="px-5 py-3 rounded-2xl bg-orange-500/15 border border-orange-500/20 text-orange-300 font-semibold hover:bg-orange-500/20 transition-all">
+
+                    <i class="fa-solid fa-house mr-2"></i>
+                    Dashboard
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- CONTENT -->
+
+        <main class="p-6 lg:p-10 space-y-8">
+
+            <!-- HERO -->
+
+            <section class="hero-gradient rounded-[32px] p-8 lg:p-12 relative overflow-hidden glow-orange">
+
+                <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 max-w-3xl">
+
+                    <p class="uppercase tracking-[0.3em] text-xs text-orange-100 font-semibold">
+                        Overdue Penalty Monitoring
+                    </p>
+
+                    <h1 class="text-4xl lg:text-6xl font-black text-white leading-tight mt-5">
+                        Fine Clearing
+                        Control Center
+                    </h1>
+
+                    <p class="mt-6 text-lg text-orange-100 leading-relaxed">
+                        Manage overdue book penalties, settle unpaid balances,
+                        monitor late return violations and maintain clean financial
+                        records across the library system.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- TABLE CARD -->
+
+            <section class="glass-card rounded-[32px] overflow-hidden">
+
+                <!-- HEADER -->
+
+                <div class="p-6 lg:p-8 border-b border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+
+                    <div>
+
+                        <h2 class="text-2xl font-black text-white flex items-center gap-3">
+
+                            <div class="w-12 h-12 rounded-2xl bg-orange-500/15 text-orange-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+
+                            Unpaid Fine Records
+
+                        </h2>
+
+                        <p class="text-slate-400 mt-2 text-sm">
+                            Complete overdue payment ledger for all members.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TABLE -->
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full min-w-[950px]">
+
+                        <thead>
+
+                        <tr class="border-b border-slate-800 bg-white/5 text-slate-400 uppercase tracking-[0.18em] text-xs">
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Borrower
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Book Title
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Due Date
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Fine Amount
+                            </th>
+
+                            <th class="px-8 py-5 text-right font-semibold">
+                                Action
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+
+                        <tbody class="divide-y divide-slate-800 text-sm">
+
+                        <tr th:each="fineItem : ${unpaidFinesList}"
+                            class="table-row">
+
+                            <!-- USER -->
+
+                            <td class="px-8 py-6">
+
+                                <div class="flex items-center gap-4">
+
+                                    <div class="w-12 h-12 rounded-2xl bg-orange-500/15 text-orange-300 flex items-center justify-center font-bold text-lg">
+
+                                        <span th:text="${#strings.substring(fineItem.user.name,0,1)}">
+                                            U
+                                        </span>
+
+                                    </div>
+
+                                    <div>
+
+                                        <h3 class="font-bold text-white text-base"
+                                            th:text="${fineItem.user.name}">
+                                        </h3>
+
+                                        <p class="text-slate-500 text-xs mt-1">
+                                            Active Member
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- BOOK -->
+
+                            <td class="px-8 py-6">
+
+                                <div>
+
+                                    <h3 class="font-semibold text-slate-200"
+                                        th:text="${fineItem.book.title}">
+                                    </h3>
+
+                                    <p class="text-slate-500 text-xs mt-1">
+                                        Overdue Borrowed Asset
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- DATE -->
+
+                            <td class="px-8 py-6">
+
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-semibold">
+
+                                    <i class="fa-solid fa-calendar-days"></i>
+
+                                    <span th:text="${fineItem.dueDate}">
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- FINE -->
+
+                            <td class="px-8 py-6">
+
+                                <div class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-orange-500/10 border border-orange-500/20">
+
+                                    <i class="fa-solid fa-indian-rupee-sign text-orange-400"></i>
+
+                                    <span class="font-black text-orange-300 text-lg font-mono"
+                                          th:text="${fineItem.fineAmount}">
+                                        0
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- ACTION -->
+
+                            <td class="px-8 py-6 text-right">
+
+                                <form th:action="@{'/admin/fines/settle/' + ${fineItem.id}}"
+                                      method="post">
+
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20">
+
+                                        <i class="fa-solid fa-cash-register"></i>
+
+                                        Settle Fine
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+
+
+                        <!-- EMPTY -->
+
+                        <tr th:if="${#lists.isEmpty(unpaidFinesList)}">
+
+                            <td colspan="5" class="py-24 text-center">
+
+                                <div class="flex flex-col items-center">
+
+                                    <div class="w-24 h-24 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-4xl">
+
+                                        <i class="fa-solid fa-circle-check"></i>
+
+                                    </div>
+
+                                    <h2 class="text-3xl font-black text-white mt-8">
+                                        No Pending Fines 🎉
+                                    </h2>
+
+                                    <p class="text-slate-400 mt-3 text-base">
+                                        Zero active overdue penalty violations detected.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>

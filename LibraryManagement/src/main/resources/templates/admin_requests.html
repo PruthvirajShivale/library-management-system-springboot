@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LibraryOS • Procurement Requests</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+
+        ::-webkit-scrollbar{
+            width:8px;
+            height:8px;
+        }
+
+        ::-webkit-scrollbar-thumb{
+            background:#334155;
+            border-radius:999px;
+        }
+
+        body{
+            background:
+            radial-gradient(circle at top left,#1e1b4b 0%,#0f172a 45%,#020617 100%);
+        }
+
+        .glass-card{
+            background:rgba(15,23,42,0.72);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(148,163,184,0.10);
+            box-shadow:0 10px 40px rgba(0,0,0,0.30);
+        }
+
+        .hero-gradient{
+            background:
+            linear-gradient(
+            135deg,
+            #7c3aed 0%,
+            #8b5cf6 40%,
+            #06b6d4 100%
+            );
+        }
+
+        .table-row{
+            transition:all .25s ease;
+        }
+
+        .table-row:hover{
+            background:rgba(255,255,255,0.04);
+            transform:scale(1.002);
+        }
+
+        .glow-purple{
+            box-shadow:0 0 35px rgba(139,92,246,0.25);
+        }
+
+        .input-dark{
+            background:rgba(15,23,42,0.75);
+            border:1px solid rgba(148,163,184,0.15);
+            color:white;
+        }
+
+        .input-dark:focus{
+            outline:none;
+            border-color:#8b5cf6;
+            box-shadow:0 0 0 4px rgba(139,92,246,0.15);
+        }
+
+    </style>
+
+</head>
+
+<body class="min-h-screen text-slate-200">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+
+    <aside class="hidden lg:flex lg:w-72 flex-col border-r border-slate-800/60 bg-black/20 backdrop-blur-xl">
+
+        <div class="h-20 border-b border-slate-800/60 flex items-center px-7">
+
+            <div class="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center text-white text-xl glow-purple">
+                <i class="fa-solid fa-code-pull-request"></i>
+            </div>
+
+            <div class="ml-4">
+
+                <h1 class="text-xl font-black text-white tracking-wide">
+                    RequestFlow
+                </h1>
+
+                <p class="text-xs text-slate-400">
+                    Procurement Control Center
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="flex-1 p-5 space-y-2">
+
+            <a href="/admin/dashboard"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/5 transition-all">
+
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+            <a href="/admin/analytics"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/5 transition-all">
+
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Analytics</span>
+
+            </a>
+
+            <a href="/admin/fines"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/5 transition-all">
+
+                <i class="fa-solid fa-coins"></i>
+                <span>Fine Management</span>
+
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-purple-500/15 border border-purple-500/20 text-purple-300">
+
+                <i class="fa-solid fa-code-pull-request"></i>
+                <span class="font-semibold">Book Requests</span>
+
+            </a>
+
+        </div>
+
+
+
+        <div class="p-5 border-t border-slate-800/60">
+
+            <a href="/admin/dashboard"
+               class="flex items-center justify-center gap-3 w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 transition-all text-white font-semibold">
+
+                <i class="fa-solid fa-arrow-left"></i>
+                Back To Dashboard
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <div class="flex-1 overflow-hidden">
+
+        <!-- TOPBAR -->
+
+        <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-black/20 backdrop-blur-xl">
+
+            <div class="h-20 px-6 lg:px-10 flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-2xl lg:text-3xl font-black text-white">
+                        Procurement Requests 📚
+                    </h2>
+
+                    <p class="text-sm text-slate-400 mt-1">
+                        Review and manage student book procurement requests.
+                    </p>
+
+                </div>
+
+                <a href="/admin/dashboard"
+                   class="px-5 py-3 rounded-2xl bg-purple-500/15 border border-purple-500/20 text-purple-300 font-semibold hover:bg-purple-500/20 transition-all">
+
+                    <i class="fa-solid fa-house mr-2"></i>
+                    Dashboard
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- CONTENT -->
+
+        <main class="p-6 lg:p-10 space-y-8">
+
+            <!-- HERO -->
+
+            <section class="hero-gradient rounded-[32px] p-8 lg:p-12 relative overflow-hidden glow-purple">
+
+                <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 max-w-3xl">
+
+                    <p class="uppercase tracking-[0.3em] text-xs text-purple-100 font-semibold">
+                        Library Procurement System
+                    </p>
+
+                    <h1 class="text-4xl lg:text-6xl font-black text-white leading-tight mt-5">
+                        Student Book
+                        Request Pipeline
+                    </h1>
+
+                    <p class="mt-6 text-lg text-purple-100 leading-relaxed">
+                        Manage custom book requests submitted by students,
+                        review procurement recommendations, approve acquisitions
+                        and streamline the library expansion workflow.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- TABLE SECTION -->
+
+            <section class="glass-card rounded-[32px] overflow-hidden">
+
+                <!-- HEADER -->
+
+                <div class="p-6 lg:p-8 border-b border-slate-800 flex flex-col lg:flex-row justify-between gap-5">
+
+                    <div>
+
+                        <h2 class="text-2xl font-black text-white flex items-center gap-3">
+
+                            <div class="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-file-circle-plus"></i>
+                            </div>
+
+                            Global Procurement Requests
+
+                        </h2>
+
+                        <p class="text-slate-400 mt-2 text-sm">
+                            Review all pending and resolved student acquisition requests.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TABLE -->
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full min-w-[1200px]">
+
+                        <thead>
+
+                        <tr class="border-b border-slate-800 bg-white/5 text-slate-400 uppercase tracking-[0.18em] text-xs">
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Student
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Requested Book
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Author
+                            </th>
+
+                            <th class="px-8 py-5 text-left font-semibold">
+                                Request Status
+                            </th>
+
+                            <th class="px-8 py-5 text-right font-semibold">
+                                Resolution Actions
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+
+                        <tbody class="divide-y divide-slate-800 text-sm">
+
+                        <tr th:each="greq : ${globalRequests}"
+                            class="table-row">
+
+                            <!-- USER -->
+
+                            <td class="px-8 py-6">
+
+                                <div class="flex items-center gap-4">
+
+                                    <div class="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-300 flex items-center justify-center font-bold text-lg">
+
+                                        <span th:text="${#strings.substring(greq.user.name,0,1)}">
+                                            U
+                                        </span>
+
+                                    </div>
+
+                                    <div>
+
+                                        <h3 class="font-bold text-white text-base"
+                                            th:text="${greq.user.name}">
+                                        </h3>
+
+                                        <p class="text-slate-500 text-xs mt-1">
+                                            Registered Student
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- TITLE -->
+
+                            <td class="px-8 py-6">
+
+                                <div>
+
+                                    <h3 class="font-semibold text-slate-200 text-base"
+                                        th:text="${greq.title}">
+                                    </h3>
+
+                                    <p class="text-slate-500 text-xs mt-1">
+                                        Requested Procurement Asset
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- AUTHOR -->
+
+                            <td class="px-8 py-6">
+
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-medium">
+
+                                    <i class="fa-solid fa-feather-pointed"></i>
+
+                                    <span th:text="${greq.author}">
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- STATUS -->
+
+                            <td class="px-8 py-6">
+
+                                <!-- PENDING -->
+
+                                <span th:if="${greq.status == 'PENDING'}"
+                                      class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 font-bold">
+
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+
+                                    Pending Review
+
+                                </span>
+
+
+
+                                <!-- APPROVED -->
+
+                                <span th:if="${greq.status == 'APPROVED'}"
+                                      class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-bold">
+
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+
+                                    Approved
+
+                                </span>
+
+
+
+                                <!-- REJECTED -->
+
+                                <span th:if="${greq.status == 'REJECTED'}"
+                                      class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 font-bold">
+
+                                    <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+
+                                    Rejected
+
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- ACTIONS -->
+
+                            <td class="px-8 py-6 text-right">
+
+                                <form th:action="@{'/admin/requests/resolve/' + ${greq.id}}"
+                                      method="post"
+                                      class="flex items-center justify-end gap-3">
+
+                                    <input type="text"
+                                           name="notes"
+                                           placeholder="Feedback / Notes"
+                                           required
+                                           class="input-dark px-4 py-3 rounded-2xl text-sm w-56 placeholder:text-slate-500">
+
+                                    <button type="submit"
+                                            name="status"
+                                            value="APPROVED"
+                                            class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-all shadow-lg shadow-emerald-500/20">
+
+                                        <i class="fa-solid fa-check"></i>
+
+                                        Approve
+
+                                    </button>
+
+                                    <button type="submit"
+                                            name="status"
+                                            value="REJECTED"
+                                            class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-bold transition-all shadow-lg shadow-rose-500/20">
+
+                                        <i class="fa-solid fa-xmark"></i>
+
+                                        Reject
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+
+
+                        <!-- EMPTY STATE -->
+
+                        <tr th:if="${#lists.isEmpty(globalRequests)}">
+
+                            <td colspan="5" class="py-24 text-center">
+
+                                <div class="flex flex-col items-center">
+
+                                    <div class="w-24 h-24 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center text-4xl">
+
+                                        <i class="fa-solid fa-inbox"></i>
+
+                                    </div>
+
+                                    <h2 class="text-3xl font-black text-white mt-8">
+                                        No Requests Available 📭
+                                    </h2>
+
+                                    <p class="text-slate-400 mt-3 text-base">
+                                        No procurement requests are currently present in the pipeline.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>
