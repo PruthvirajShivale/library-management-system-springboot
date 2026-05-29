@@ -212,6 +212,7 @@ http://localhost:8080
 ---
 
 ## 🎯 Project Highlights
+
  -Secure Role-Based System
  -Automatic Fine Calculation
  -Real-time Analytics Dashboard
